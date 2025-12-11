@@ -1,17 +1,9 @@
-import os
-from pathlib import Path
-
 from dotenv import load_dotenv
 from jinja import jinja2_env
 
+from terms.config import base_url, public_path
+
 load_dotenv('.env')
-
-base_url = os.getenv('BASE_URL', '/')
-
-catalog_path = Path(os.getenv('CATALOG_PATH')) / 'rdmorganiser'
-
-public_path = Path(os.getenv('PUBLIC_PATH', 'public'))
-
 
 template_path = 'index.html'
 

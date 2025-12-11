@@ -1,19 +1,10 @@
-import os
 from collections import defaultdict
 from pathlib import Path
 
-from dotenv import load_dotenv
+from config import base_url, catalog_path, public_path
 from jinja import jinja2_env
 from jinja2.exceptions import TemplateNotFound
 from utils import gather_elements
-
-load_dotenv('.env')
-
-base_url = os.getenv('BASE_URL', '/')
-
-catalog_path = Path(os.getenv('CATALOG_PATH')) / 'rdmorganiser'
-
-public_path = Path(os.getenv('PUBLIC_PATH', 'public'))
 
 module_elements = defaultdict(list)
 for element in gather_elements(catalog_path):
