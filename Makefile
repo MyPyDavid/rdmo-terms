@@ -18,4 +18,4 @@ serve:
 	python3 -m http.server 4000 -d public
 
 clean:
-	rm -r public
+	rm -fr public
