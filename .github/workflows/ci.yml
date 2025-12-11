@@ -69,24 +69,13 @@ jobs:
       - name: Install Python deps
         run: |
           python -m pip install --upgrade pip
-          if [ -f requirements.txt ]; then
-            python -m pip install .
-          fi
+          python -m pip install .
 
       # 4) Run build scripts (they write into PUBLIC_PATH = public/)
-      - name: Run src/terms/elements.py
-        run: python src/terms/elements.py
-
-      - name: Run src/terms/index.py
-        run: python src/terms/index.py
-
+      # all: index element elements static
       # 5) Copy static assets into public/
-      - name: Copy static assets into public
-        run: |
-          if [ -d static ]; then
-            mkdir -p public
-            cp -r static/* public/
-          fi
+      - name: Run make all
+        run: make
 
       # 6) Configure Pages (official action)
       - name: Setup Pages
