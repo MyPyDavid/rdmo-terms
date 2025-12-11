@@ -1,12 +1,10 @@
 import os
 from collections import defaultdict
-
 from pathlib import Path
 
 from dotenv import load_dotenv
 from jinja2 import Environment, FileSystemLoader
 from jinja2.exceptions import TemplateNotFound
-
 from utils import gather_elements
 
 load_dotenv('.env')

@@ -5,7 +5,7 @@ RDMO is a tool to support the systematic planning, organisation and implementati
 ## Setup
 
 ```bash
-pip install -r requirements.txt
+pip install -e .
 ```
 
 Create `.env` with:
@@ -17,6 +17,6 @@ CATALOG_PATH=../rdmo-catalog
 ## Usage
 
 ```bash
-python build/elements.py
-python build/index.py
+python src/terms/elements.py
+python src/terms/index.py
 ```

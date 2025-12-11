@@ -3,16 +3,16 @@
 all: index element elements static
 
 index:
-	python build/index.py
+	python src/terms/index.py
 
 element:
-	python build/element.py
+	python src/terms/element.py
 
 elements:
-	python build/elements.py
+	python src/terms/elements.py
 
 static:
-	python build/static.py
+	python src/terms/static.py
 
 serve:
 	python3 -m http.server 4000 -d public
