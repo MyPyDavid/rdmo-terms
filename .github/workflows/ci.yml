@@ -1,0 +1,120 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    # run CI only if files in these whitelisted paths are changed
+    paths:
+      - '.github/workflows/**'
+      - 'rdmo/**'
+      - .pre-commit-config.yaml
+      - conftest.py
+      - pyproject.toml
+  workflow_dispatch:
+  repository_dispatch:
+  schedule:
+    - cron: '0 5 * * *'
+
+# Permissions required for GitHub Pages official actions
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Ensure only one run per ref at a time
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PYTHONDONTWRITEBYTECODE: 1
+  FORCE_COLOR: 1
+
+jobs:
+  build_html:
+    name: Build HTML (convert from rdmo-catalog)
+    runs-on: ubuntu-24.04
+    env:
+      # elements.py:
+      #   catalog_path = Path(os.getenv('CATALOG_PATH')) / 'rdmorganiser'
+      # We checkout rdmo-catalog into ./rdmo-catalog
+      CATALOG_PATH: rdmo-catalog
+      # elements.py:
+      #   public_path = Path(os.getenv('PUBLIC_PATH', 'public'))
+      PUBLIC_PATH: public
+      # elements.py (optional override):
+      #   templates_path = Path(os.getenv('TEMPLATE_PATH', 'templates'))
+      # TEMPLATE_PATH: templates
+    steps:
+      # 1) Checkout this repo (rdmo-terms)
+      - name: Checkout rdmo-terms
+        uses: actions/checkout@v4
+
+      # 2) Checkout rdmo-catalog into subfolder
+      - name: Checkout rdmo-catalog
+        uses: actions/checkout@v4
+        with:
+          repository: rdmorganiser/rdmo-catalog
+          path: rdmo-catalog
+
+      # 3) Python setup
+      - name: Set up Python 3.13
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+          cache: 'pip'
+
+      - name: Install Python deps
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install .
+
+      # 4) Run build scripts (they write into PUBLIC_PATH = public/)
+      # all: index element elements static
+      # 5) Copy static assets into public/
+      - name: Run make all
+        run: make
+
+      # 6) Configure Pages (official action)
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      # 7) Upload public/ as the Pages artifact
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
+
+      # 8) Upload a downloadable artifact for this run
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: site-build
+          path: public
+          if-no-files-found: error
+
+      # 9) Add a summary with download hints
+      - name: Post build summary
+        run: |
+          {
+            echo "## Build summary";
+            echo "- ✅ Static site generated in \`public/\`.";
+            echo "- 📦 Download the build artifact named **site-build** from this run.";
+            echo "- 🔗 [View all artifacts for this run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}#artifacts).";
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build_html
+    runs-on: ubuntu-24.04
+    # Only deploy on pushes to main (not PRs)
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

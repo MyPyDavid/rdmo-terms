@@ -1,20 +1,7 @@
 import xml.etree.ElementTree as et
 
-ns_dc = '{http://purl.org/dc/elements/1.1/}'
+from terms.config import module_map, ns_dc
 
-module_map = {
-    'condition': 'conditions',
-    'attribute': 'domain',
-    'optionset': 'options',
-    'option': 'options',
-    'catalog': 'questions',
-    'section': 'questions',
-    'page': 'questions',
-    'questionset': 'questions',
-    'question': 'questions',
-    'task': 'tasks',
-    'view': 'views'
-}
 
 def gather_elements(catalog_path):
     elements = []

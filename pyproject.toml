@@ -1,0 +1,54 @@
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.package-data]
+"terms" = ["templates/*", "static/**/*"]
+
+[project]
+name = "terms"
+version = "0.1.0"
+description = "A search and filter interface for https://github.com/rdmorganiser/rdmo-catalog"
+readme = "README.md"
+keywords = [
+  "data management plan",
+  "dmp",
+  "rdmo",
+  "research data",
+  "research data management",
+]
+
+license = "Apache-2.0"
+authors = [
+  {name = "RDMO Arbeitsgemeinschaft", email = "rdmo-team@listserv.dfn.de"},
+]
+requires-python = ">=3.12"
+dependencies = [
+    "httpx>=0.28.1",
+    "jinja2>=3.1.6",
+    "python-dotenv>=1.2.1",
+]
+
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+select = [
+  "B",    # flake8-bugbear
+  "C4",   # flake8-comprehensions
+  "DJ",   # flake8-django
+  "E",    # pycodestyle
+  "F",    # pyflakes
+  "I",    # isort
+  "PGH",  # pygrep-hooks
+  "PT",   # flake8-pytest-style
+  "RUF",  # ruff
+  "UP",   # pyupgrade
+  "W",    # pycodestyle
+  "YTT",  # flake8-2020
+  "G",    # flake8-logging-format
+  "INT"   # flake8-gettext
+]
+ignore = [
+  "RUF012", # mutable-class-default
+]
