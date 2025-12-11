@@ -87,6 +87,24 @@ jobs:
         with:
           path: public
 
+      # 8) Upload a downloadable artifact for this run
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: site-build
+          path: public
+          if-no-files-found: error
+
+      # 9) Add a summary with download hints
+      - name: Post build summary
+        run: |
+          {
+            echo "## Build summary";
+            echo "- ✅ Static site generated in \`public/\`.";
+            echo "- 📦 Download the build artifact named **site-build** from this run.";
+            echo "- 🔗 [View all artifacts for this run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}#artifacts).";
+          } >> "$GITHUB_STEP_SUMMARY"
+
   deploy:
     name: Deploy to GitHub Pages
     needs: build_html
