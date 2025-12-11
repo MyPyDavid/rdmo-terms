@@ -1,3 +1,9 @@
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.package-data]
+"terms" = ["templates/*", "static/**/*"]
+
 [project]
 name = "terms"
 version = "0.1.0"
@@ -21,6 +27,7 @@ dependencies = [
     "jinja2>=3.1.6",
     "python-dotenv>=1.2.1",
 ]
+
 
 [tool.ruff]
 line-length = 120
