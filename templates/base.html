@@ -4,13 +4,20 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width,initial-scale=1.0">
-        <link rel="icon" href="<%= BASE_URL %>favicon.png">
+        <link rel="icon" href="{{ base_url }}static/img/favicon.png">
         <title>RDMO terms</title>
+
+        <link href="{{ base_url }}static/vendor/bootstrap.min.css" rel="stylesheet" />
+        <link href="{{ base_url }}style.css" rel="stylesheet" />
+
+        <script src="{{ base_url }}static/vendor/bootstrap.bundle.min.js"></script>
+        <script src="{{ base_url }}static/vendor/minisearch.min.js"></script>
+        <script src="{{ base_url }}app.js"></script>
     </head>
     <body>
         <nav class="navbar navbar-expand-lg bg-body-tertiary">
             <div class="container-fluid">
-                <a class="navbar-brand" href="/">RDMO terms</a>
+                <a class="navbar-brand" href="{{ base_url }}">RDMO terms</a>
                 <button class="navbar-toggler" type="button"
                         data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
                         aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -20,22 +27,22 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link" href="/questions/">Questions</a>
+                            <a class="nav-link" href="{{ base_url }}questions/">Questions</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/domain/">Domain</a>
+                            <a class="nav-link" href="{{ base_url }}domain/">Domain</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/options/">Options</a>
+                            <a class="nav-link" href="{{ base_url }}options/">Options</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/conditions/">Conditions</a>
+                            <a class="nav-link" href="{{ base_url }}conditions/">Conditions</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/tasks/">Tasks</a>
+                            <a class="nav-link" href="{{ base_url }}tasks/">Tasks</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/views/">Views</a>
+                            <a class="nav-link" href="{{ base_url }}views/">Views</a>
                         </li>
                     </ul>
                 </div>

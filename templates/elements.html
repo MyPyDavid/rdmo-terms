@@ -4,7 +4,7 @@
 
 {% for element in elements %}
 <div>
-    <a href="{{ element.url_path }}">{{ element.uri }}</a>
+    <a href="{{ base_url }}{{ element.url }}">{{ element.uri }}</a>
 </div>
 {% endfor %}
 

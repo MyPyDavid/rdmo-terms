@@ -11,6 +11,8 @@ from utils import gather_elements
 
 load_dotenv('.env')
 
+base_url = os.getenv('BASE_URL', '/')
+
 catalog_path = Path(os.getenv('CATALOG_PATH')) / 'rdmorganiser'
 
 public_path = Path(os.getenv('PUBLIC_PATH', 'public'))
@@ -29,7 +31,7 @@ for module, elements in module_elements.items():
     except TemplateNotFound:
         template = jinja2_env.get_template('elements.html')
 
-    html = template.render(elements=elements)
+    html = template.render(base_url=base_url, elements=elements)
     html_path = public_path / module
     html_path.mkdir(exist_ok=True, parents=True)
     html_path.joinpath('index.html').write_text(html)
