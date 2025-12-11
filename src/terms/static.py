@@ -5,19 +5,7 @@ from importlib.resources import files
 from pathlib import Path
 
 import httpx
-from dotenv import load_dotenv
-
-load_dotenv('.env')
-
-catalog_path = Path(os.getenv('CATALOG_PATH')) / 'rdmorganiser'
-public_path = Path(os.getenv('PUBLIC_PATH', 'public'))
-
-assets = [
-    ('bootstrap.min.css', 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css'),
-    ('bootstrap.min.css.map', 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css.map'),
-    ('bootstrap.bundle.min.js', 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js'),
-    ('minisearch.min.js', 'https://cdn.jsdelivr.net/npm/minisearch@7.2.0/dist/umd/index.min.js')
-]
+from config import assets, public_path
 
 
 def copytree_traversable(src, dst: Path) -> None:
