@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0">
+        <link rel="icon" href="{{ base_url }}static/img/favicon.png">
+        <title>RDMO terms</title>
+
+        <link href="{{ base_url }}static/assets/bootstrap.min.css" rel="stylesheet" />
+        <link href="{{ base_url }}static/css/style.css" rel="stylesheet" />
+
+        <script src="{{ base_url }}static/assets/bootstrap.bundle.min.js"></script>
+        <script src="{{ base_url }}static/assets/lodash.min.js"></script>
+        <script src="{{ base_url }}static/assets/minisearch.min.js"></script>
+        <script src="{{ base_url }}static/js/app.js"></script>
+    </head>
+    <body>
+        {% include "_nav.html" %}
+
+        <main>
+            <div class="container">
+                {% block content %}
+                {% endblock %}
+            </div>
+        </main>
+  </body>
+</html>

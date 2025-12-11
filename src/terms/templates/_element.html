@@ -1,0 +1,40 @@
+<div class="card mb-3 element" data-uri="{{ element.uri }}">
+    <div class="card-header">
+        <div class="row">
+            <div class="col-2">
+                <strong>{{ element.type.capitalize() }}</strong>
+            </div>
+            <div class="col-10">
+                <a href="{{ base_url }}{{ element.url }}">{{ element.uri }}</a>
+            </div>
+        </div>
+    </div>
+    <ul class="list-group list-group-flush">
+{% for key, value in element.items() %}
+{% if key not in ["type", "module", "uri", "uri_prefix", "uri_path", "template", "url"] and value %}
+        <li class="list-group-item">
+            <div class="row">
+                <div class="col-2">
+                    <strong>{{ key }}</strong>
+                </div>
+                <div class="col-10">
+                    {% if value is string %}
+                    {{ value | striptags }}
+                    {% elif value is mapping %}
+                    <a href="{{ base_url }}{{ value.url }}">{{ value.uri }}</a>
+                    {% elif value is iterable %}
+                    <ul class="list-unstyled">
+                        {% for item in value %}
+                        <li><a href="{{ base_url }}{{ item.url }}">{{ item.uri }}</a></li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    {{ value }}
+                    {% endif %}
+                </div>
+            </div>
+        </li>
+{% endif %}
+{% endfor %}
+    </ul>
+</div>
