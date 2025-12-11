@@ -1,3 +1,4 @@
+import asyncio
 import os
 import shutil
 from importlib.resources import files
@@ -50,14 +51,33 @@ def copy_static(public_path: Path) -> None:
     dst_root = public_path / "static"
     copytree_traversable(src_root, dst_root)
 
-copy_static(public_path)
 
-for asset_name, asset_url in assets:
-    with httpx.Client() as client:
-        response = client.get(asset_url)
-        response.raise_for_status()
+async def download_asset(client: httpx.AsyncClient, asset_name: str, asset_url: str, public_path: Path) -> None:
+    response = await client.get(asset_url)
+    response.raise_for_status()
 
-        asset_path = public_path / 'static' / 'vendor' / asset_name
-        asset_path.parent.mkdir(exist_ok=True, parents=True)
-        with asset_path.open('wb') as fp:
-            fp.write(response.content)
+    asset_path = public_path / "static" / "vendor" / asset_name
+    asset_path.parent.mkdir(exist_ok=True, parents=True)
+    asset_path.write_bytes(response.content)
+
+
+async def download_assets(public_path: Path) -> None:
+    async with httpx.AsyncClient() as client:
+        await asyncio.gather(
+            *[
+                download_asset(client, asset_name, asset_url, public_path)
+                for asset_name, asset_url in assets
+            ]
+        )
+
+
+async def main() -> None:
+    # 1. Copy packaged static files → public/static
+    copy_static(public_path)
+
+    # 2. Download CDN assets (concurrently)
+    await download_assets(public_path)
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
