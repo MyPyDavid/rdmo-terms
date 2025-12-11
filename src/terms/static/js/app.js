@@ -45,15 +45,18 @@ document.addEventListener("DOMContentLoaded", function () {
       // base fields we always want to index
       var baseFields = ["uri", "uri_path", "comment"];
 
-      // Auto-detected fields: all keys starting with text_ or title_
-      var dynamicFields = [];
-      var sample = data[0];
+      // Collect all keys starting with text_ or title_ across ALL items
+      var dynamicFieldSet = new Set();
 
-      Object.keys(sample).forEach(function (key) {
-        if (/^(text_|title_)/.test(key)) {
-          dynamicFields.push(key);
-        }
+      data.forEach(function (item) {
+        Object.keys(item).forEach(function (key) {
+          if (/^(text_|title_)/.test(key)) {
+            dynamicFieldSet.add(key);
+          }
+        });
       });
+
+      var dynamicFields = Array.from(dynamicFieldSet);
 
       // Merge and make sure fields are unique
       var allFields = baseFields.concat(
@@ -61,6 +64,23 @@ document.addEventListener("DOMContentLoaded", function () {
           return baseFields.indexOf(field) === -1;
         })
       );
+
+      // // Auto-detected fields: all keys starting with text_ or title_
+      // var dynamicFields = [];
+      // var sample = data[0];
+
+      // Object.keys(sample).forEach(function (key) {
+      //   if (/^(text_|title_)/.test(key)) {
+      //     dynamicFields.push(key);
+      //   }
+      // });
+
+      // // Merge and make sure fields are unique
+      // var allFields = baseFields.concat(
+      //   dynamicFields.filter(function (field) {
+      //     return baseFields.indexOf(field) === -1;
+      //   })
+      // );
 
       // ------------------------------------------------------------
 
