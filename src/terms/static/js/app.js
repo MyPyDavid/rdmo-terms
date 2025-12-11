@@ -123,10 +123,22 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
 
-    var results = miniSearch.search(query, {
+    var options = {
       prefix: true,
       fuzzy: 0.2
-    });
+    };
+
+    // if it looks like a URL, search more strictly
+    if (/^https?:\/\//.test(query)) {
+      options = {
+        fields: ["uri", "uri_path", "url"],
+        prefix: false,
+        fuzzy: false,
+        combineWith: "AND"
+      };
+    }
+
+    var results = miniSearch.search(query, options);
 
     if (results.length === 0) {
       elements.forEach(function (el) {
