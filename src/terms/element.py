@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 
 from dotenv import load_dotenv
-from jinja2 import Environment, FileSystemLoader
+from jinja import jinja2_env
 from jinja2.exceptions import TemplateNotFound
 from utils import gather_elements
 
@@ -13,9 +13,6 @@ base_url = os.getenv('BASE_URL', '/')
 catalog_path = Path(os.getenv('CATALOG_PATH')) / 'rdmorganiser'
 
 public_path = Path(os.getenv('PUBLIC_PATH', 'public'))
-templates_path = Path(os.getenv('TEMPLATE_PATH', 'templates'))
-
-jinja2_env = Environment(loader=FileSystemLoader(templates_path))
 
 for element in gather_elements(catalog_path):
     template_path = str(Path(element.type).with_suffix('.html'))
