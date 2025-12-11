@@ -37,6 +37,7 @@ jobs:
     name: Build HTML (convert from rdmo-catalog)
     runs-on: ubuntu-24.04
     env:
+      BASE_URL: /terms/
       CATALOG_PATH: rdmo-catalog/rdmorganiser
       PUBLIC_PATH: public
     steps:
