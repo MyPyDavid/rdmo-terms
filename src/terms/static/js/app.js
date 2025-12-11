@@ -105,8 +105,8 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  filterInput.addEventListener("input", function () {
-    var query = filterInput.value.trim();
+  const handleInput = (event) => {
+    var query = event.target.value.trim();
 
     if (!indexReady || !miniSearch || !query) {
       showAll();
@@ -137,5 +137,10 @@ document.addEventListener("DOMContentLoaded", function () {
     } else {
       filterByResults(results);
     }
-  });
+  }
+
+  const debouncedInput = _.debounce(handleInput, 300);
+
+  filterInput.addEventListener("input", debouncedInput);
+
 });
