@@ -1,3 +1,4 @@
+import json
 import os
 
 from pathlib import Path
@@ -20,13 +21,14 @@ templates_path = Path(os.getenv('TEMPLATE_PATH', 'templates'))
 jinja2_env = Environment(loader=FileSystemLoader(templates_path))
 
 for element in gather_elements(catalog_path):
-    template_path = str(Path(element.type).with_suffix('.html'))
+    template_path = str(Path(element['type']).with_suffix('.html'))
     try:
         template = jinja2_env.get_template(template_path)
     except TemplateNotFound:
         template = jinja2_env.get_template('element.html')
 
     html = template.render(base_url=base_url, element=element)
-    html_path = public_path / element.url
+    html_path = public_path / element['url']
     html_path.mkdir(exist_ok=True, parents=True)
     html_path.joinpath('index.html').write_text(html)
+    html_path.joinpath('index.json').write_text(json.dumps(element, indent=2))

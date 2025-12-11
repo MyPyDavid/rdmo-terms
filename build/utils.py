@@ -1,5 +1,4 @@
 import xml.etree.ElementTree as et
-from types import SimpleNamespace
 
 ns_dc = '{http://purl.org/dc/elements/1.1/}'
 
@@ -43,7 +42,6 @@ def gather_elements(catalog_path):
                     element[key] = value
 
                 element['url'] = f"{element['module']}/{element.get('uri_path', element.get('path', ''))}"
-
-                elements.append(SimpleNamespace(**element))
+                elements.append(element)
 
     return elements

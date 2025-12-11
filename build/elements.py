@@ -1,3 +1,4 @@
+import json
 import os
 from collections import defaultdict
 
@@ -22,7 +23,7 @@ jinja2_env = Environment(loader=FileSystemLoader(templates_path))
 
 module_elements = defaultdict(list)
 for element in gather_elements(catalog_path):
-    module_elements[element.module].append(element)
+    module_elements[element['module']].append(element)
 
 for module, elements in module_elements.items():
     template_path = str(Path(module).with_suffix('.html'))
@@ -35,3 +36,4 @@ for module, elements in module_elements.items():
     html_path = public_path / module
     html_path.mkdir(exist_ok=True, parents=True)
     html_path.joinpath('index.html').write_text(html)
+    html_path.joinpath('index.json').write_text(json.dumps(elements, indent=2))

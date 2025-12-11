@@ -4,19 +4,19 @@
 
 {% for element in elements %}
 
-<div class="card mb-5 element">
+<div class="card mb-5 element" data-url="{{ element.url }}">
     <div class="card-header">
         {{ element.type }} <a href="{{ base_url }}{{ element.url }}">{{ element.uri }}</a>
     </div>
     <ul class="list-group list-group-flush">
-        {% for key, value in element.__dict__.items() %}
+{% for key, value in element.items() %}
         <li class="list-group-item">
             <div class="row">
                 <div class="col-2">{{ key }}</div>
                 <div class="col-10">{{ value }}</div>
             </div>
         </li>
-        {% endfor %}
+{% endfor %}
     </ul>
 </div>
 
