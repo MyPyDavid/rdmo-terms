@@ -37,16 +37,8 @@ jobs:
     name: Build HTML (convert from rdmo-catalog)
     runs-on: ubuntu-24.04
     env:
-      # elements.py:
-      #   catalog_path = Path(os.getenv('CATALOG_PATH')) / 'rdmorganiser'
-      # We checkout rdmo-catalog into ./rdmo-catalog
-      CATALOG_PATH: rdmo-catalog
-      # elements.py:
-      #   public_path = Path(os.getenv('PUBLIC_PATH', 'public'))
+      CATALOG_PATH: rdmo-catalog/rdmorganiser
       PUBLIC_PATH: public
-      # elements.py (optional override):
-      #   templates_path = Path(os.getenv('TEMPLATE_PATH', 'templates'))
-      # TEMPLATE_PATH: templates
     steps:
       # 1) Checkout this repo (rdmo-terms)
       - name: Checkout rdmo-terms
@@ -74,8 +66,8 @@ jobs:
       # 4) Run build scripts (they write into PUBLIC_PATH = public/)
       # all: index element elements static
       # 5) Copy static assets into public/
-      - name: Run make all
-        run: make
+      - name: Run rdmo-terms build
+        run: rdmo-terms build
 
       # 6) Configure Pages (official action)
       - name: Setup Pages
