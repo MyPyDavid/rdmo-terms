@@ -1,0 +1,58 @@
+:root {
+    --rdmo-color: #101F70;
+    --rdmo-color-bg: #ffffff;
+    --rdmo-color-alt-bg: #f8f9fa;
+    --rdmo-color-brand: #9d9d9d;
+    --rdmo-color-primary: #101F70;
+    --rdmo-color-link: #337ab7;
+    --rdmo-color-link-hover: #2a5d90;
+    --rdmo-color-light-gray: #f8f9fa;
+    --rdmo-color-dark-gray: #999;
+    --rdmo-color-header: #fff;
+    --rdmo-color-header-bg: #000;
+    --rdmo-color-header-height: 300px;
+    --rdmo-color-footer: #999;
+    --rdmo-color-footer-bg: #001;
+
+    --rdmo-font: 'Open sans', sans-serif;
+    --rdmo-font-headline: 'Roboto Slab', serif;
+
+    --bs-font-sans-serif: var(--rdmo-font);
+    --bs-body-font-size: 1rem;
+}
+
+nav.navbar {
+    --bs-navbar-color: var(--rdmo-color-brand);
+    --bs-navbar-hover-color: white;
+    --bs-navbar-active-color: white;
+
+    --bs-nav-link-color: var(--bs-navbar-color);
+    --bs-nav-link-hover-color: var(--bs-navbar-hover-color);
+
+    --bs-navbar-brand-color: var(--bs-navbar-color);
+    --bs-navbar-brand-hover-color: var(--bs-navbar-hover-color);
+
+    background-color: var(--rdmo-color);
+
+    .container-fluid {
+        @media only screen and (min-width: $grid-breakpoint-md) {
+            padding-left: 3rem;
+            padding-right: 3rem;
+        }
+    }
+
+    .dropdown-menu {
+        --bs-nav-link-color: var(--rdmo-color-link);
+        --bs-nav-link-hover-color: var(--rdmo-color-link-hover);
+        --bs-nav-link-active-color: var(--rdmo-color-link);
+
+        .nav-item:hover {
+            background-color: var(--rdmo-color-bg);
+        }
+    }
+}
+
+main {
+    margin-top: 6rem;
+    margin-bottom: 6rem;
+}
