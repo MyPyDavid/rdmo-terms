@@ -1,26 +1,21 @@
 document.addEventListener("DOMContentLoaded", function () {
-  var searchInput = document.getElementById("search");
-  if (!searchInput) return;
-
-  if (typeof MiniSearch === "undefined") {
-    console.error("MiniSearch not found. Check minisearch.min.js script tag.");
-    return;
-  }
+  var filterInput = document.getElementById("filter")
+  if (!filterInput) return;
 
   // Collect all result cards on this page
   var elements = Array.prototype.slice.call(
-    document.querySelectorAll(".element[data-url]")
+    document.querySelectorAll(".element[data-uri]")
   );
   if (elements.length === 0) {
     return;
   }
 
   // Map url -> DOM element for quick lookup
-  var elementByUrl = new Map();
+  var elementByUri = new Map();
   elements.forEach(function (el) {
-    var url = el.getAttribute("data-url");
+    var url = el.getAttribute("data-uri");
     if (url) {
-      elementByUrl.set(url, el);
+      elementByUri.set(url, el);
     }
   });
 
@@ -29,19 +24,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Load index.json from the same directory as this page
   fetch("index.json")
-    .then(function (res) {
-      if (!res.ok) {
+    .then((response) => {
+      if (!response.ok) {
         throw new Error("index.json not found for this page");
       }
-      return res.json();
+      return response.json();
     })
-    .then(function (data) {
-      if (!data || !data.length) {
-        return;
-      }
-
-      // --- CENTRALIZE / AUTO-DETECT FIELDS ------------------------
-
+    .then((data) => {
       // base fields we always want to index
       var baseFields = ["uri", "uri_path", "comment"];
 
@@ -65,37 +54,18 @@ document.addEventListener("DOMContentLoaded", function () {
         })
       );
 
-      // // Auto-detected fields: all keys starting with text_ or title_
-      // var dynamicFields = [];
-      // var sample = data[0];
-
-      // Object.keys(sample).forEach(function (key) {
-      //   if (/^(text_|title_)/.test(key)) {
-      //     dynamicFields.push(key);
-      //   }
-      // });
-
-      // // Merge and make sure fields are unique
-      // var allFields = baseFields.concat(
-      //   dynamicFields.filter(function (field) {
-      //     return baseFields.indexOf(field) === -1;
-      //   })
-      // );
-
-      // ------------------------------------------------------------
-
       miniSearch = new MiniSearch({
         fields: allFields,
-        storeFields: ["url"],
-        idField: "url"
+        storeFields: ["uri"],
+        idField: "uri"
       });
 
       var docs = data
         .filter(function (item) {
-          return item.url && elementByUrl.has(item.url);
+          return item.uri && elementByUri.has(item.uri);
         })
         .map(function (item) {
-          var doc = { url: item.url || "" };
+          var doc = { uri: item.uri || "" };
 
           allFields.forEach(function (field) {
             // Fall back to empty string if missing / null
@@ -126,7 +96,7 @@ document.addEventListener("DOMContentLoaded", function () {
     );
 
     elements.forEach(function (el) {
-      var url = el.getAttribute("data-url");
+      var url = el.getAttribute("data-uri");
       if (visibleUrls.has(url)) {
         el.classList.remove("d-none");
       } else {
@@ -135,8 +105,8 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  searchInput.addEventListener("input", function () {
-    var query = searchInput.value.trim();
+  filterInput.addEventListener("input", function () {
+    var query = filterInput.value.trim();
 
     if (!indexReady || !miniSearch || !query) {
       showAll();

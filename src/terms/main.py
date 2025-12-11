@@ -50,7 +50,7 @@ def elements():
         html_path = public_path / module
         html_path.mkdir(exist_ok=True, parents=True)
         html_path.joinpath('index.html').write_text(html)
-        html_path.with_suffix('.json').write_text(json.dumps(elements, indent=2))
+        html_path.joinpath('index.json').write_text(json.dumps(elements, indent=2))
 
 
 @app.command()
