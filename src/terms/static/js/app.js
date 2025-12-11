@@ -1,122 +1,112 @@
-document.addEventListener("DOMContentLoaded", function () {
-  var filterInput = document.getElementById("filter")
-  if (!filterInput) return;
+document.addEventListener("DOMContentLoaded", () => {
+  const filterInput = document.getElementById("filter")
+  if (!filterInput) return
 
   // Collect all result cards on this page
-  var elements = Array.prototype.slice.call(
+  const elements = Array.prototype.slice.call(
     document.querySelectorAll(".element[data-uri]")
-  );
+  )
   if (elements.length === 0) {
-    return;
+    return
   }
 
   // Map url -> DOM element for quick lookup
-  var elementByUri = new Map();
-  elements.forEach(function (el) {
-    var url = el.getAttribute("data-uri");
+  const elementByUri = new Map()
+  elements.forEach(element => {
+    const url = element.getAttribute("data-uri")
     if (url) {
-      elementByUri.set(url, el);
+      elementByUri.set(url, element)
     }
-  });
+  })
 
-  var miniSearch = null;
-  var indexReady = false;
+  let miniSearch = null
+  let indexReady = false
 
   // Load index.json from the same directory as this page
   fetch("index.json")
     .then((response) => {
       if (!response.ok) {
-        throw new Error("index.json not found for this page");
+        throw new Error("index.json not found for this page")
       }
-      return response.json();
+      return response.json()
     })
     .then((data) => {
       // base fields we always want to index
-      var baseFields = ["uri", "uri_path", "comment"];
+      const baseFields = ["uri", "uri_path", "comment"]
 
       // Collect all keys starting with text_ or title_ across ALL items
-      var dynamicFieldSet = new Set();
+      const dynamicFieldSet = new Set()
 
-      data.forEach(function (item) {
-        Object.keys(item).forEach(function (key) {
+      data.forEach((item) => {
+        Object.keys(item).forEach(key => {
           if (/^(text_|title_)/.test(key)) {
-            dynamicFieldSet.add(key);
+            dynamicFieldSet.add(key)
           }
-        });
-      });
+        })
+      })
 
-      var dynamicFields = Array.from(dynamicFieldSet);
+      const dynamicFields = Array.from(dynamicFieldSet)
 
       // Merge and make sure fields are unique
-      var allFields = baseFields.concat(
-        dynamicFields.filter(function (field) {
-          return baseFields.indexOf(field) === -1;
-        })
-      );
+      const allFields = baseFields.concat(
+        dynamicFields.filter((field) => baseFields.indexOf(field) === -1)
+      )
 
       miniSearch = new MiniSearch({
         fields: allFields,
         storeFields: ["uri"],
         idField: "uri"
-      });
+      })
 
-      var docs = data
-        .filter(function (item) {
-          return item.uri && elementByUri.has(item.uri);
-        })
-        .map(function (item) {
-          var doc = { uri: item.uri || "" };
+      const docs = data
+        .filter((item) => item.uri && elementByUri.has(item.uri))
+        .map((item) => {
+          const doc = { uri: item.uri || "" }
 
-          allFields.forEach(function (field) {
+          allFields.forEach((field) => {
             // Fall back to empty string if missing / null
-            doc[field] = item[field] || "";
-          });
+            doc[field] = item[field] || ""
+          })
 
-          return doc;
-        });
+          return doc
+        })
 
-      miniSearch.addAll(docs);
-      indexReady = true;
+      miniSearch.addAll(docs)
+      indexReady = true
     })
-    .catch(function (err) {
-      console.error("MiniSearch: could not load or build index.json", err);
-    });
+    .catch((err) => console.error("MiniSearch: could not load or build index.json", err))
 
-  function showAll() {
-    elements.forEach(function (el) {
-      el.classList.remove("d-none");
-    });
+  const showAll = () => {
+    elements.forEach((element) => {
+      element.classList.remove("d-none")
+    })
   }
 
-  function filterByResults(results) {
-    var visibleUrls = new Set(
-      results.map(function (r) {
-        return r.id;
-      })
-    );
+  const filterByResults = (results) => {
+    const visibleUrls = new Set(results.map((r) => r.id))
 
-    elements.forEach(function (el) {
-      var url = el.getAttribute("data-uri");
+    elements.forEach((element) => {
+      const url = element.getAttribute("data-uri")
       if (visibleUrls.has(url)) {
-        el.classList.remove("d-none");
+        element.classList.remove("d-none")
       } else {
-        el.classList.add("d-none");
+        element.classList.add("d-none")
       }
-    });
+    })
   }
 
   const handleInput = (event) => {
-    var query = event.target.value.trim();
+    const query = event.target.value.trim()
 
     if (!indexReady || !miniSearch || !query) {
-      showAll();
-      return;
+      showAll()
+      return
     }
 
-    var options = {
+    const options = {
       prefix: true,
       fuzzy: 0.2
-    };
+    }
 
     // if it looks like a URL, search more strictly
     if (/^https?:\/\//.test(query)) {
@@ -125,22 +115,21 @@ document.addEventListener("DOMContentLoaded", function () {
         prefix: false,
         fuzzy: false,
         combineWith: "AND"
-      };
+      }
     }
 
-    var results = miniSearch.search(query, options);
+    const results = miniSearch.search(query, options)
 
-    if (results.length === 0) {
-      elements.forEach(function (el) {
-        el.classList.add("d-none");
-      });
+    if (_.isEmpty(results)) {
+      elements.forEach((element) => {
+        element.classList.add("d-none")
+      })
     } else {
-      filterByResults(results);
+      filterByResults(results)
     }
   }
 
-  const debouncedInput = _.debounce(handleInput, 300);
+  const debouncedInput = _.debounce(handleInput, 300)
 
-  filterInput.addEventListener("input", debouncedInput);
-
-});
+  filterInput.addEventListener("input", debouncedInput)
+})
