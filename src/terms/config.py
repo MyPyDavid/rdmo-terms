@@ -15,7 +15,17 @@ assets = [
     ('bootstrap.bundle.min.js', 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js'),
     ('minisearch.min.js', 'https://cdn.jsdelivr.net/npm/minisearch@7.2.0/dist/umd/index.min.js')
 ]
+
 ns_dc = '{http://purl.org/dc/elements/1.1/}'
+
+modules = [
+    'questions',
+    'domain',
+    'options',
+    'conditions',
+    'tasks',
+    'views',
+]
 
 module_map = {
     'condition': 'conditions',

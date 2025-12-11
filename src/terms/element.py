@@ -14,7 +14,7 @@ for element in gather_elements(catalog_path):
         template = jinja2_env.get_template('element.html')
 
     html = template.render(base_url=base_url, element=element)
-    html_path = public_path / element['url']
+    html_path = public_path / element['module'] / element.get('uri_path', element.get('path', ''))
     html_path.mkdir(exist_ok=True, parents=True)
     html_path.joinpath('index.html').write_text(html)
     html_path.joinpath('index.json').write_text(json.dumps(element, indent=2))
