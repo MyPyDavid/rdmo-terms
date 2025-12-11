@@ -1,4 +1,4 @@
-.PHONY: index element elements static
+.PHONY: index element elements static serve clean
 
 all: index element elements static
 
@@ -13,6 +13,9 @@ elements:
 
 static:
 	python build/static.py
+
+serve:
+	python3 -m http.server 4000 -d public
 
 clean:
 	rm -r public
