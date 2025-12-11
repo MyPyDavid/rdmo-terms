@@ -1,8 +1,17 @@
+import asyncio
+import os
+import shutil
 import xml.etree.ElementTree as et
+from importlib.resources import files
+from pathlib import Path
 
-from terms.config import module_map, ns_dc
+import httpx
+from jinja2 import Environment, FileSystemLoader, PackageLoader, select_autoescape
 
-def gather_elements(catalog_path):
+from .config import assets, module_map, ns_dc
+
+
+def gather_elements(catalog_path: Path) -> list:
     elements = []
     urls = {}
     for file_path in catalog_path.rglob("*"):
@@ -27,9 +36,12 @@ def gather_elements(catalog_path):
                         key = child_node.tag
 
                     if len(child_node) > 0:
-                        element[key] = [{
-                            'uri': grand_child_node.attrib.get(f"{ns_dc}uri") for grand_child_node in child_node
-                        }]
+                        element[key] = [
+                            {
+                                'uri': grand_child_node.attrib.get(f"{ns_dc}uri")
+                            }
+                            for grand_child_node in child_node
+                        ]
                     elif child_node.attrib.get(f"{ns_dc}uri"):
                         element[key] = {
                             'uri': child_node.attrib.get(f"{ns_dc}uri")
@@ -50,3 +62,36 @@ def gather_elements(catalog_path):
                 element[key]['url'] = urls[item['uri']]
 
     return sorted(elements, key=lambda x: x["uri"])
+
+
+def get_template(template_name: str):
+    templates_path = os.getenv('TEMPLATE_PATH')
+    if templates_path is None:
+        env = Environment(loader=PackageLoader("terms", "templates"), autoescape=select_autoescape())
+    else:
+        env = Environment(loader=FileSystemLoader(templates_path))
+
+    return env.get_template(template_name)
+
+
+def copy_static(static_path: Path):
+    shutil.copytree(files('terms') / 'static', static_path, dirs_exist_ok=True)
+
+
+async def download_assets(assets_path: Path) -> None:
+    async with httpx.AsyncClient() as client:
+        await asyncio.gather(
+            *[
+                download_asset(client, asset_name, asset_url, assets_path)
+                for asset_name, asset_url in assets
+            ]
+        )
+
+
+async def download_asset(client: httpx.AsyncClient, asset_name: str, asset_url: str, assets_path: Path) -> None:
+    response = await client.get(asset_url)
+    response.raise_for_status()
+
+    asset_path = assets_path / asset_name
+    asset_path.parent.mkdir(exist_ok=True, parents=True)
+    asset_path.write_bytes(response.content)

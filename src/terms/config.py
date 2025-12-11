@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 load_dotenv('.env')
 
 base_url = os.getenv('BASE_URL', '/')
-catalog_path = Path(os.getenv('CATALOG_PATH')) / 'rdmorganiser'
+catalog_path = Path(os.getenv('CATALOG_PATH'))
 public_path = Path(os.getenv('PUBLIC_PATH', 'public'))
 
 assets = [
