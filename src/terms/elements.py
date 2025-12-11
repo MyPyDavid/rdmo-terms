@@ -18,7 +18,7 @@ for module, elements in module_elements.items():
     except TemplateNotFound:
         template = jinja2_env.get_template('elements.html')
 
-    html = template.render(base_url=base_url, elements=elements)
+    html = template.render(base_url=base_url, module=module, elements=elements)
     html_path = public_path / module
     html_path.mkdir(exist_ok=True, parents=True)
     html_path.joinpath('index.html').write_text(html)

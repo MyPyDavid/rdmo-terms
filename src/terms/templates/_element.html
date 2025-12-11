@@ -1,0 +1,18 @@
+<div class="card mb-3 element" data-url="{{ element.url }}">
+    <div class="card-header">
+        <strong>{{ element.type.capitalize() }}</strong>
+        <a href="{{ base_url }}{{ element.url }}">{{ element.uri }}</a>
+    </div>
+    <ul class="list-group list-group-flush">
+{% for key, value in element.items() %}
+{% if key not in ["template"] %}
+        <li class="list-group-item">
+            <div class="row">
+                <div class="col-2"><strong>{{ key }}</strong></div>
+                <div class="col-10">{{ value }}</div>
+            </div>
+        </li>
+{% endif %}
+{% endfor %}
+    </ul>
+</div>

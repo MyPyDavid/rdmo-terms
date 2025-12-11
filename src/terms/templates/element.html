@@ -2,8 +2,6 @@
 
 {% block content %}
 
-<div>
-    <a href="{{ base_url }}{{ element.url }}">{{ element.uri }}</a>
-</div>
+{% include "_element.html" %}
 
 {% endblock %}
