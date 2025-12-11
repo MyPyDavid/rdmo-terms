@@ -1,2 +1,11 @@
-{% for element in elements %}{{ element.uri }}
+{% extends "base.html" %}
+
+{% block content %}
+
+{% for element in elements %}
+<div>
+    <a href="{{ element.url_path }}">{{ element.uri }}</a>
+</div>
 {% endfor %}
+
+{% endblock %}

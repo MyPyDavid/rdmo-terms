@@ -24,12 +24,7 @@ for element in gather_elements(catalog_path):
     except TemplateNotFound:
         template = jinja2_env.get_template('element.html')
 
-    try:
-        path = element.uri_path
-    except AttributeError:
-        path = element.path
-
     html = template.render(element=element)
-    html_path = public_path / element.module / path
+    html_path = public_path / element.file_path
     html_path.mkdir(exist_ok=True, parents=True)
     html_path.joinpath('index.html').write_text(html)

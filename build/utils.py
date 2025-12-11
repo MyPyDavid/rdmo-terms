@@ -42,6 +42,9 @@ def gather_elements(catalog_path):
                     value = child_node.attrib.get(f"{ns_dc}uri") or child_node.text
                     element[key] = value
 
+                element['file_path'] = f"{element['module']}/{element.get('uri_path', element.get('path', ''))}"
+                element['url_path'] = f'/{element['file_path']}'
+
                 elements.append(SimpleNamespace(**element))
 
     return elements
