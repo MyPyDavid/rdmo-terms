@@ -2,46 +2,11 @@
 
 {% block content %}
 
-{# Optional header + toggle, only for catalogs #}
-{% if element.type == "catalog" %}
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h1 class="h3 mb-0">
-        Catalog
-        <small class="text-muted">{{ element.uri }}</small>
-    </h1>
+<h1 class="mb-3">
+    {{ element.type.capitalize() }}
+    <small class="text-muted">{{ element.uri }}</small>
+</h1>
 
-    <div class="btn-group btn-group-sm" role="group" aria-label="View mode">
-        <button
-            type="button"
-            class="btn btn-outline-secondary active"
-            id="btn-view-flat"
-        >
-            Flat view
-        </button>
-        <button
-            type="button"
-            class="btn btn-outline-secondary"
-            id="btn-view-tree"
-            data-root-uri="{{ element.uri }}"
-        >
-            Tree view
-        </button>
-    </div>
-</div>
-{% endif %}
-
-{# Flat view = your existing card rendering #}
-<div id="catalog-flat-view">
-    {% include "_element.html" %}
-</div>
-
-{# Tree view placeholder, only needed for catalog pages #}
-{% if element.type == "catalog" %}
-<div id="catalog-tree-view" class="d-none">
-    <div class="text-muted small">
-        Tree view will appear here.
-    </div>
-</div>
-{% endif %}
+{% include "_element.html" %}
 
 {% endblock %}

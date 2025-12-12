@@ -8,7 +8,7 @@ from http.server import HTTPServer, SimpleHTTPRequestHandler
 import typer
 
 from .config import base_url, catalog_path, public_path
-from .elements import gather_elements
+from .elements import build_element_tree, gather_elements
 from .utils import copy_static, download_assets, gather_files, get_template_env
 
 app = typer.Typer()
@@ -56,7 +56,15 @@ def elements():
 @app.command()
 def element():
     xml_files = gather_files(catalog_path)
-    for element in gather_elements(xml_files):
+    elements = gather_elements(xml_files)
+    elements_by_uri = {element["uri"]: element for element in elements}
+
+    for element in elements:
+        if element.get("type") == "catalog":
+            tree = build_element_tree(element["uri"], elements_by_uri)
+            if tree:
+                element["tree"] = tree
+
         template = template_env.get_template('element.html')
 
         html = template.render(base_url=base_url, element=element)

@@ -88,3 +88,36 @@ def _attach_urls(values: Iterable[Any], urls: dict[str, str]) -> None:
                     item.url = urls.get(item.uri)
         elif isinstance(value, Reference):
             value.url = urls.get(value.uri)
+
+
+def build_element_tree(
+    root_uri: str, elements_by_uri: dict[str, dict[str, Any]], seen: set[str] | None = None
+) -> dict[str, Any] | None:
+    """Build a nested tree representation for a catalog starting at ``root_uri``."""
+
+    seen = set() if seen is None else seen
+
+    element = elements_by_uri.get(root_uri)
+    if not element or root_uri in seen:
+        return None
+
+    seen.add(root_uri)
+
+    tree = {
+        "uri": element["uri"],
+        "type": element.get("type") or element.get("module") or "element",
+        "url": element.get("url"),
+        "children": [],
+    }
+
+    for key in ["sections", "pages", "questionsets", "questions"]:
+        for child_ref in element.get(key, []) or []:
+            child_uri = child_ref.get("uri")
+            if not child_uri:
+                continue
+
+            child_tree = build_element_tree(child_uri, elements_by_uri, seen)
+            if child_tree:
+                tree["children"].append(child_tree)
+
+    return tree

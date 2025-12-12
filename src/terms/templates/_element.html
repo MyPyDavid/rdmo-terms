@@ -1,3 +1,21 @@
+{% macro render_tree(node) %}
+<div class="small">
+    <strong>{{ node.type | capitalize }}: </strong>
+    {% if node.url %}
+    <a href="{{ base_url }}{{ node.url }}">{{ node.uri }}</a>
+    {% else %}
+    {{ node.uri }}
+    {% endif %}
+</div>
+{% if node.children %}
+<ul class="list-unstyled ms-3 mb-0">
+    {% for child in node.children %}
+    <li>{{ render_tree(child) }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% endmacro %}
+
 <div class="card mb-3 element" data-uri="{{ element.uri }}">
     <div class="card-header">
         <div class="row">
@@ -18,7 +36,11 @@
                     <strong>{{ key }}</strong>
                 </div>
                 <div class="col-10">
-                    {% if value is string %}
+                    {% if key == "tree" %}
+                    <div class="catalog-tree">
+                        {{ render_tree(value) }}
+                    </div>
+                    {% elif value is string %}
                     {{ value | striptags }}
                     {% elif value is mapping %}
                     <a href="{{ base_url }}{{ value.url }}">{{ value.uri }}</a>
