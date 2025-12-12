@@ -30,16 +30,48 @@
     <ul class="list-group list-group-flush">
 {% for key, value in element.items() %}
 {% if key not in ["type", "module", "uri", "uri_prefix", "uri_path", "template", "url"] and value %}
-        <li class="list-group-item">
+        {% set lang = None %}
+        {% set base_key = key %}
+        {% if "_" in key %}
+            {% set maybe_key, maybe_lang = key.rsplit("_", 1) %}
+            {% if maybe_lang|length <= 5 and maybe_lang.isalpha() %}
+                {% set lang = maybe_lang %}
+                {% set base_key = maybe_key %}
+            {% endif %}
+        {% endif %}
+        <li class="list-group-item"{% if lang %} data-lang="{{ lang }}" data-lang-key="{{ base_key }}"{% endif %}>
             <div class="row">
-                <div class="col-2">
-                    <strong>{{ key }}</strong>
+                <div class="col-12 col-lg-2">
+                    <strong>{{ base_key }}</strong>
+                    {% if lang %}<span class="badge text-bg-light ms-1">{{ lang }}</span>{% endif %}
                 </div>
-                <div class="col-10">
+                <div class="col-12 col-lg-10">
                     {% if key == "tree" %}
                     <div class="catalog-tree">
                         {{ render_tree(value) }}
                     </div>
+                    {% elif key == "git" and value is mapping %}
+                    <dl class="row mb-0 small">
+                        <dt class="col-sm-3">Commit</dt>
+                        <dd class="col-sm-9">
+                            {% if value.commit_url %}
+                            <a href="{{ value.commit_url }}" target="_blank" rel="noopener">{{ value.commit }}</a>
+                            {% else %}
+                            {{ value.commit }}
+                            {% endif %}
+                            {% if value.message %}<div class="text-muted">{{ value.message }}</div>{% endif %}
+                        </dd>
+                        <dt class="col-sm-3">Author</dt>
+                        <dd class="col-sm-9">{{ value.author }}{% if value.date %}<div class="text-muted">{{ value.date }}</div>{% endif %}</dd>
+                        <dt class="col-sm-3">Source</dt>
+                        <dd class="col-sm-9">
+                            {% if value.file_url %}
+                            <a href="{{ value.file_url }}" target="_blank" rel="noopener">{{ value.path }}</a>
+                            {% else %}
+                            {{ value.path }}
+                            {% endif %}
+                        </dd>
+                    </dl>
                     {% elif value is string %}
                     {{ value | striptags }}
                     {% elif value is mapping %}

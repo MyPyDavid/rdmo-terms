@@ -5,6 +5,7 @@ from typing import Any
 from xml.etree import ElementTree as et
 
 from terms.config import module_map, ns_dc
+from terms.utils import get_git_info
 
 
 @dataclass
@@ -23,9 +24,12 @@ class Element:
     module: str
     attributes: dict[str, Any] = field(default_factory=dict)
     url: str | None = None
+    git: dict[str, Any] | None = None
 
     def to_serializable(self) -> dict[str, Any]:
         base = {'uri': self.uri, 'type': self.type, 'module': self.module, 'url': self.url}
+        if self.git:
+            base['git'] = self.git
         base.update({key: self._serialize_value(value) for key, value in self.attributes.items()})
         return base
 
@@ -40,13 +44,24 @@ class Element:
 def gather_elements(files: list[Path]) -> list:
     elements = []
     urls = {}
+    git_infos: dict[Path, dict[str, Any] | None] = {}
     for file_path in files:
         tree = et.parse(file_path)
         root_node = tree.getroot()
 
+        git_info = git_infos.get(file_path)
+        if file_path not in git_infos:
+            git_info = get_git_info(file_path)
+            git_infos[file_path] = git_info
+
         for element_node in root_node:
             uri = element_node.attrib.get(f"{ns_dc}uri")
-            element = Element(uri=uri, type=element_node.tag, module=module_map[element_node.tag])
+            element = Element(
+                uri=uri,
+                type=element_node.tag,
+                module=module_map[element_node.tag],
+                git=git_info,
+            )
 
             for child_node in element_node:
                 key = _extract_key(child_node)
