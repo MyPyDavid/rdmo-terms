@@ -29,14 +29,18 @@
     </div>
     <ul class="list-group list-group-flush">
 {% for key, value in element.items() %}
-{% if key not in ["type", "module", "uri", "uri_prefix", "uri_path", "template", "url"] and value %}
+    {% if key not in ["type", "module", "uri", "uri_prefix", "uri_path", "template", "url"] and value %}
         {% set lang = None %}
         {% set base_key = key %}
         {% if "_" in key %}
-            {% set maybe_key, maybe_lang = key.rsplit("_", 1) %}
-            {% if maybe_lang|length <= 5 and maybe_lang.isalpha() %}
-                {% set lang = maybe_lang %}
-                {% set base_key = maybe_key %}
+            {% set parts = key.rsplit("_", 1) %}
+            {% set is_language = parts|length == 2
+              and parts[1]|length == 2
+              and parts[0] in ["title", "short_title", "text", "help", "label", "verb"] %}
+
+            {% if is_language %}
+                {% set base_key = parts[0] %}
+                {% set lang = parts[1] %}
             {% endif %}
         {% endif %}
         <li class="list-group-item"{% if lang %} data-lang="{{ lang }}" data-lang-key="{{ base_key }}"{% endif %}>
